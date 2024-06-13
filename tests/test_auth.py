@@ -22,7 +22,7 @@ def test_register(client, app):
 def test_register_validate_input(client, username, password, message):
     response = client.post(
         '/auth/register',
-        data={'username: username, 'password': password}
+        data={'username': username, 'password': password}
     )
     assert message in response.data
 
