@@ -13,7 +13,7 @@ bp = Blueprint('workout', __name__)
 def index():
     db = get_db()
     workouts = db.execute(
-            'SELECT w.id, w.date, username'
+            'SELECT p.id, p.date, username'
             ' FROM workout p JOIN user u ON p.author_id = u.id'
             ' ORDER BY created DESC'
     ).fetchall()
@@ -40,9 +40,9 @@ def create():
                 (title, body, g.user['id'])
             )
             db.commit()
-            return redirect(url_for('blog.index'))
+            return redirect(url_for('workout.index'))
 
-    return render_template('blog/create.html')
+    return render_template('workout/create.html')
 
 def get_post(id, check_author=True):
     post = get_db().execute(
@@ -83,9 +83,9 @@ def update(id):
                 (title, body, id)
             )
             db.commit()
-            return redirect(url_for('blog.index'))
+            return redirect(url_for('workout.index'))
 
-    return render_template('blog/update.html', post=post)
+    return render_template('workout/update.html', post=post)
 
 @bp.route('/<int:id>/delete', methods=('POST',))
 @login_required
@@ -94,4 +94,4 @@ def delete(id):
     db = get_db()
     db.execute('DELETE FROM post WHERE id = ?', (id,))
     db.commit()
-    return redirect(url_for('blog.index'))
+    return redirect(url_for('workout.index'))
