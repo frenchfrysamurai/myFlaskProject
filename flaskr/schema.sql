@@ -24,5 +24,5 @@ CREATE TABLE exercise (
 	sets INTEGER NOT NULL,
 	reps INTEGER NOT NULL,
 	weight REAL NOT NULL,
-	FOREIGN KEY (workout_id) REFERENCES workout (id)
+	FOREIGN KEY (workout_id) REFERENCES workouts (id)
 );
