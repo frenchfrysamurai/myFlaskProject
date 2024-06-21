@@ -103,6 +103,7 @@ def update(id):
                     'INSERT INTO exercises (workout_id, exercise_name, sets, reps, weight)'
                     ' VALUES (?, ?, ?, ?, ?)',
                     (id, exercise['name'], exercise['sets'], exercise['reps'], exercise['weight'])
+                )
             db.commit()
             return redirect(url_for('workout.index'))
 

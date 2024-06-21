@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS workouts;
 DROP TABLE IF EXISTS exercises;
 
-CREATE TABLE user (
+CREATE TABLE users (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	username TEXT UNIQUE NOT NULL,
 	email TEXT NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE workouts (
 	user_id INTEGER NOT NULL,
 	date TEXT NOT NULL,
 	workout_name TEXT NOT NULL,
-	FOREIGN KEY (user_id) REFERENCES user (id)
+	FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
 CREATE TABLE exercise (
