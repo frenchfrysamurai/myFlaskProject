@@ -13,9 +13,9 @@ bp = Blueprint('workout', __name__)
 def index():
     db = get_db()
     workouts = db.execute(
-            'SELECT p.id, p.date, username'
-            ' FROM workout p JOIN user u ON p.author_id = u.id'
-            ' ORDER BY created DESC'
+            'SELECT w.id, w.date, w.workout_name, u.username'
+            ' FROM workout w JOIN users u ON w.user_id = u.id'
+            ' ORDER BY w.date DESC'
     ).fetchall()
     return render_template('workout/index.html', workouts=workouts)
 
@@ -23,75 +23,97 @@ def index():
 @login_required
 def create():
     if request.method == 'POST':
-        title = request.form['title']
-        body = request.form['body']
+        workout_name = request.form['workout_name']
+        date = request.form['date']
+        exercises = request.form.getlist('exercises')
         error = None
 
-        if not title:
-            error = 'Title is required.'
+        if not workout_name:
+            error = 'Workout name is required.'
+
+        if not date:
+            error = 'Date is required.'
 
         if error is not None:
             flash(error)
         else:
             db = get_db()
             db.execute(
-                'INSERT INTO post (title, body, author_id)'
+                'INSERT INTO workouts (user_id, date, workout_name)'
                 ' VALUES (?, ?, ?)',
-                (title, body, g.user['id'])
+                (date, workout_name, g.user['id'])
             )
+            workout_id = db.execute('SELECT last_insert_rowid()').fetchone()[0]
+            for exercise in exercises:
+                db.execute(
+                    'INSERT INTO exercises (workout_id, exercise_name, sets, reps, weight)'
+                    ' VALUES (?, ?, ?, ?, ?)',
+                    (workout_id, exercise['name'], exercise['sets'], exercise['reps'], exercise['weight'])
+                )
             db.commit()
             return redirect(url_for('workout.index'))
 
     return render_template('workout/create.html')
 
-def get_post(id, check_author=True):
-    post = get_db().execute(
-        'SELECT p.id, title, body, created, author_id, username'
-        ' FROM post p JOIN user u ON p.author_id = u.id'
-        ' WHERE p.id = ?',
+def get_workout(id, check_author=True):
+    workout = get_db().execute(
+        'SELECT w.id, w.date, w.workout_name, w.user_id, u.username'
+        ' FROM workouts w JOIN user u ON w.user_id = u.id'
+        ' WHERE w.id = ?',
         (id,)
     ).fetchone()
 
     if post is None:
-        abort(404, f"Post id {id} doesn't exist.")
+        abort(404, f"Workout id {id} doesn't exist.")
 
-    if check_author and post['author_id'] != g.user['id']:
+    if check_author and post['user_id'] != g.user['id']:
         abort(403)
 
-    return post
+    return workout
 
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
 @login_required
 def update(id):
-    post = get_post(id)
+    workout = get_workout(id)
 
     if request.method == 'POST':
-        title = request.form['title']
-        body = request.form['body']
+        workout_name = request.form['workout_name']
+        date = request.form['date']
+        exercises = request.form.getlist('exercises')
         error = None
 
-        if not title:
-            error = 'Title is required.'
+        if not workout_name:
+            error = 'Workout name is required.'
+
+        if not date:
+            error = 'Date is required.'
 
         if error is not None:
             flash(error)
         else:
             db = get_db()
             db.execute(
-                'UPDATE post SET title = ?, body = ?'
+                'UPDATE workouts SET workout_name = ?, body = ?'
                 ' WHERE id = ?',
-                (title, body, id)
+                (workout_name, date, id)
             )
+            db.execute('DELETE FROM exercises WHERE workout_id = ?', (id,))
+            for exercise in exercises:
+                db.execute(
+                    'INSERT INTO exercises (workout_id, exercise_name, sets, reps, weight)'
+                    ' VALUES (?, ?, ?, ?, ?)',
+                    (id, exercise['name'], exercise['sets'], exercise['reps'], exercise['weight'])
             db.commit()
             return redirect(url_for('workout.index'))
 
-    return render_template('workout/update.html', post=post)
+    return render_template('workout/update.html', workout=workout)
 
 @bp.route('/<int:id>/delete', methods=('POST',))
 @login_required
 def delete(id):
-    get_post(id)
+    get_workout(id)
     db = get_db()
-    db.execute('DELETE FROM post WHERE id = ?', (id,))
+    db.execute('DELETE FROM workouts WHERE id = ?', (id,))
+    db.execute('DELETE FROM exercises WHERE workout_id = ?', (id,))
     db.commit()
     return redirect(url_for('workout.index'))
