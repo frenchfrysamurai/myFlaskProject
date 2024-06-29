@@ -1,15 +1,29 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}New Post{% endblock %}</h1>
+  <h1>{% block title %}New Workout{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
   <form method="post">
-    <label for="title">Title</label>
-    <input name="title" id="title" value="{{ request.form['title'] }}" required>
-    <label for="body">Body</label>
-    <textarea name="body" id="body">{{ request.form['body'] }}</textarea>
+    <label for="workout">Workout</label>
+    <input name="workout" id="workout" value="{{ request.form['workout'] }}" required>
+
+    <label for="date">Date</label>
+    <input type="date" name="date" id="date" value="{{ request.form['date'] }}" required>
+
+    <label for="sets">Sets</label>
+    <input type="number" name="sets" value="{{ request.form['sets'] }}" required>
+
+    <label for="reps">Reps</label>
+    <input type="number" name="reps" id="reps" value="{{ request.form['reps'] }}" required>
+
+    <label for="weight">Weight</label>
+    <input type="number" name="weight" id="weight" value="{{ request.form['weight'] }}" required>
+
+    <label for="duration">Duration (minutes)</label>
+    <input type="number" name="duration" id="duration" value="{{ request.form['duration'] }}" required>
+
     <input type="submit" value="Save">
   </form>
 {% endblock %}

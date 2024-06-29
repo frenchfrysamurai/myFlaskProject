@@ -23,6 +23,7 @@ CREATE TABLE post (
   sets INTEGER NOT NULL,
   reps INTEGER NOT NULL,
   weight REAL NOT NULL,
-  time INTEGER,
+  date TEXT NOT NULL,
+  duration INTEGER NOT NULL,
   FOREIGN KEY (author_id) REFERENCES user (id)
 );

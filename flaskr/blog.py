@@ -18,7 +18,7 @@ def index():
     """Show all the posts, most recent first."""
     db = get_db()
     posts = db.execute(
-        "SELECT p.id, title, body, created, author_id, username"
+        "SELECT p.id, workout, date, duration, sets, reps, weight, created, author_id, username"
         " FROM post p JOIN user u ON p.author_id = u.id"
         " ORDER BY created DESC"
     ).fetchall()
@@ -40,7 +40,7 @@ def get_post(id, check_author=True):
     post = (
         get_db()
         .execute(
-            "SELECT p.id, title, body, created, author_id, username"
+            "SELECT p.id, workout, date, sets, reps, duration, weight, created, author_id, username"
             " FROM post p JOIN user u ON p.author_id = u.id"
             " WHERE p.id = ?",
             (id,),
@@ -62,20 +62,24 @@ def get_post(id, check_author=True):
 def create():
     """Create a new post for the current user."""
     if request.method == "POST":
-        title = request.form["title"]
-        body = request.form["body"]
+        workout = request.form["workout"]
+        date = request.form["date"]
+        sets = request.form["sets"]
+        reps = request.form["reps"]
+        duration = request.form["duration"]
+        weight = request.form["weight"]
         error = None
 
-        if not title:
-            error = "Title is required."
+        if not workout:
+            error = "Type of workout is required."
 
         if error is not None:
             flash(error)
         else:
             db = get_db()
             db.execute(
-                "INSERT INTO post (title, body, author_id) VALUES (?, ?, ?)",
-                (title, body, g.user["id"]),
+                "INSERT INTO post (workout, date, sets, reps, weight, duration, author_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                (workout, date, sets, reps, weight, duration, g.user["id"]),
             )
             db.commit()
             return redirect(url_for("blog.index"))
@@ -90,19 +94,23 @@ def update(id):
     post = get_post(id)
 
     if request.method == "POST":
-        title = request.form["title"]
-        body = request.form["body"]
+        workout = request.form["workout"]
+        date = request.form["date"]
+        sets = request.form["sets"]
+        reps = request.form["reps"]
+        weight = request.form["weight"]
+        duration = request.form["duration"]
         error = None
 
         if not title:
-            error = "Title is required."
+            error = "Type of workout is required."
 
         if error is not None:
             flash(error)
         else:
             db = get_db()
             db.execute(
-                "UPDATE post SET title = ?, body = ? WHERE id = ?", (title, body, id)
+                "UPDATE post SET workout = ?, date = ?, sets = ?, reps = ?, weight = ?, duration = ?  WHERE id = ?", (workout, date, sets, reps, weight, duration, id)
             )
             db.commit()
             return redirect(url_for("blog.index"))

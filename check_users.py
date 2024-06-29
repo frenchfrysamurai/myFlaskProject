@@ -3,7 +3,7 @@ import sqlite3
 def check_users():
     conn = sqlite3.connect('instance/flaskr.sqlite')
     cur = conn.cursor()
-    cur.execute('SELECT * FROM users')
+    cur.execute('SELECT * FROM user')
     users = cur.fetchall()
     conn.close()
     return users
