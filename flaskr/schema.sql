@@ -1,28 +1,28 @@
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS workouts;
-DROP TABLE IF EXISTS exercises;
+-- Initialize the database.
+-- Drop any existing data and create empty tables.
 
-CREATE TABLE users (
-	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	username TEXT UNIQUE NOT NULL,
-	email TEXT NOT NULL,
-	password TEXT NOT NULL
+DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS post;
+
+CREATE TABLE user (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL,
+  --My work in progress
+  email TEXT NOT NULL
 );
 
-CREATE TABLE workouts (
-	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	user_id INTEGER NOT NULL,
-	date TEXT NOT NULL,
-	workout_name TEXT NOT NULL,
-	FOREIGN KEY (user_id) REFERENCES users (id)
-);
-
-CREATE TABLE exercise (
-	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	workout_id INTEGER NOT NULL,
-	exercise_name TEXT NOT NULL,
-	sets INTEGER NOT NULL,
-	reps INTEGER NOT NULL,
-	weight REAL NOT NULL,
-	FOREIGN KEY (workout_id) REFERENCES workouts (id)
+CREATE TABLE post (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  author_id INTEGER NOT NULL,
+  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  title TEXT NOT NULL,
+  body TEXT NOT NULL,
+  --My stuff below
+  workout TEXT NOT NULL,
+  sets INTEGER NOT NULL,
+  reps INTEGER NOT NULL,
+  weight REAL NOT NULL,
+  time INTEGER,
+  FOREIGN KEY (author_id) REFERENCES user (id)
 );
