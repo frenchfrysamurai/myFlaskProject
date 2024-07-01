@@ -1,15 +1,32 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Edit "{{ post['title'] }}"{% endblock %}</h1>
+  <h1>{% block title %}Edit "{{ post['workout'] }}"{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
   <form method="post">
+    <label for="train">Train</label>
+    <input name="train" id="train" value="{{ request.form['train'] or post['train'] }}" required>
+    
     <label for="workout">Workout</label>
     <input name="workout" id="workout" value="{{ request.form['workout'] or post['workout'] }}" required>
-    <label for="body">Body</label>
-    <textarea name="body" id="body">{{ request.form['body'] or post['body'] }}</textarea>
+    
+    <label for="date">Date</label>
+    <input type="date" name="date" id="date" value="{{ request.form['date'] or post['date'] }}" required>
+
+    <label for="sets">Sets</label>
+    <input type="number" name="sets" value="{{ request.form['sets'] or post['sets'] }}" required>
+
+    <label for="reps">Reps</label>
+    <input type="number" name="reps" id="reps" value="{{ request.form['reps'] or post['reps'] }}" required>
+
+    <label for="weight">Weight</label>
+    <input type="number" name="weight" id="weight" value="{{ request.form['weight'] or post['weight'] }}" required>
+
+    <label for="duration">Duration (minutes)</label>
+    <input type="number" name="duration" id="duration" value="{{ request.form['duration'] or post['duration'] }}" required>
+    
     <input type="submit" value="Save">
   </form>
   <hr>

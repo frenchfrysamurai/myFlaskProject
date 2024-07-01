@@ -6,6 +6,9 @@
 
 {% block content %}
   <form method="post">
+    <label for="train">Train</label>
+    <input name="train" id="train" value="{{ request.form['train'] }}" required>
+
     <label for="workout">Workout</label>
     <input name="workout" id="workout" value="{{ request.form['workout'] }}" required>
 
