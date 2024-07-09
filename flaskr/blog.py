@@ -16,11 +16,17 @@ bp = Blueprint("blog", __name__)
 @bp.route("/")
 def index():
     """Show all the posts, most recent first."""
+    if g.user is None:
+        flash("You must be logged in to view the posts.")
+        return redirect(url_for("auth.login"))
+
     db = get_db()
     posts = db.execute(
         "SELECT p.id, train, workout, date, duration, sets, reps, weight, created, author_id, username"
         " FROM post p JOIN user u ON p.author_id = u.id"
-        " ORDER BY created DESC"
+        " WHERE u.id = ?"
+        " ORDER BY created DESC",
+        (g.user['id'],),
     ).fetchall()
     return render_template("blog/index.html", posts=posts)
 
