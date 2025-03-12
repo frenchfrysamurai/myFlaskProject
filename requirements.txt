@@ -1,0 +1,9 @@
+blinker==1.5
+click==8.0.4
+Flask==2.2.5
+importlib-metadata==4.13.0
+itsdangerous==2.1.2
+Jinja2==3.1.2
+MarkupSafe==3.0.2
+Werkzeug==2.2.3
+zipp==3.21.0

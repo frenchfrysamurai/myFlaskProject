@@ -1,4 +1,4 @@
-#!/home/mintalio/Projs/myFlaskProject/.venv/bin/python3
+#!/home/emilio/projs/myFlaskProject/.venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
